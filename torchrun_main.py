@@ -150,9 +150,15 @@ def main(args):
 
     backend = "nccl"
     if device_type == "xpu":
-        backend = "xccl"
+        if hasattr(torch.distributed.distributed_c10d, "is_xccl_available") and
+           torch.distributed.distributed_c10d.is_xccl_available():
+            backend = "xccl"
+        else:
+            import intel_extension_for_pytorch
+            import oneccl_bindings_for_pytorch
+            backend = "ccl"
 
-    # dist.init_process_group(backend=backend, rank=global_rank, world_size=world_size)
+    dist.init_process_group(backend=backend, rank=global_rank, world_size=world_size)
 
     logger.info("Process group initialized")
     device = f"{device_type}:{local_rank}"
