@@ -154,7 +154,6 @@ def main(args):
            torch.distributed.distributed_c10d.is_xccl_available():
             backend = "xccl"
         else:
-            import intel_extension_for_pytorch
             import oneccl_bindings_for_pytorch
             backend = "ccl"
 
